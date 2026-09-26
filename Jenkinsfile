@@ -30,11 +30,11 @@ pipeline{
         steps{
             sh "docker build -t fadel8/repo_1:${BUILD_NUMBER} ."
         }
-        stage("Login to docker hub"){
+    }
+    stage("Login to docker hub"){
         steps{
             sh "docker login -u ${Username} -p ${Password}"
         }
-    }
     }
     stage("Push Docker Image"){
         steps{
