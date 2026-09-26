@@ -38,7 +38,7 @@ pipeline{
     }
     stage("Push Docker Image"){
         steps{
-            sh "docker push fadel8/repo_1:${BUILD_NUMBER}"
+            sh "docker push fadel8/repo_1:v${BUILD_NUMBER}"
         }
     }
   }
