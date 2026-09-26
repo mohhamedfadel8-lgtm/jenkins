@@ -7,9 +7,6 @@ pipeline{
      maven 'maven-3-5-4'
   }
   environment {
-  Username = "credentials("Docker-username")"
-}
-environment {
   Username = credentials("Docker-username")
   Password = credentials("Docker_Password")
 }
