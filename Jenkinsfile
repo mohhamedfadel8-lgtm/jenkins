@@ -73,7 +73,7 @@ pipeline {
                 label "agent-02"
             }
             steps{
-                sh'docker run -d -p 8090:8090 --name java-app fadel8/repo_1:$vBUILD_NUMBER'
+                sh'docker run -d -p 8090:8090 --name java-app fadel8/repo_1:v${BUILD_NUMBER}'
             }
         }
     }
