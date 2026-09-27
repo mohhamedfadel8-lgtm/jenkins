@@ -47,7 +47,7 @@ pipeline {
         label "agent-01"
     }
             steps {
-                sh 'docker build -t fadel8/repo_1:$v{BUILD_NUMBER} .'
+                sh 'docker build -t fadel8/repo_1:v${BUILD_NUMBER} .'
             }
         }
 
@@ -65,7 +65,7 @@ pipeline {
         label "agent-01"
     }
             steps {
-                sh 'docker push fadel8/repo_1:$v{BUILD_NUMBER}'
+                sh 'docker push fadel8/repo_1:v${BUILD_NUMBER}'
             }
         }
         stage("Deploy Docker image"){
