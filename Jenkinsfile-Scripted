@@ -32,7 +32,7 @@ node("agent-01"){
 
     stage("Deploy Docker Application"){
         node("agent-02"){
-           def Check_Image = sh 'docker ps -a | grep java-app || true'
+           def Check_Image = sh returnStdout: true, script: 'docker ps -a | grep java-app || true'
           if(Check_Image){
             sh 'docker rm -f java-app && docker run -d -p 8090:8090 --name java-app fadel8/repo_1:v${BUILD_NUMBER}'
            }else{
