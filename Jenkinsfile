@@ -73,7 +73,10 @@ pipeline {
                 label "agent-02"
             }
             steps{
-                sh'docker run -d -p 8090:8090 --name java-app fadel8/repo_1:v${BUILD_NUMBER}'
+                sh'''
+                Check_Image=$(docker ps -a | grep java-app) || true
+                if [[ -n $Check_Image ]]; then rm -f java-app && docker run -d -p 8090:8090 --name java-app fadel8/repo_1:v${BUILD_NUMBER}; else docker run -d -p 8090:8090 --name java-app fadel8/repo_1:v${BUILD_NUMBER}; fi
+                '''
             }
         }
     }
