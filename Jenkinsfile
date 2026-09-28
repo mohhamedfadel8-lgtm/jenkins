@@ -1,3 +1,5 @@
+@library('jenkins-sharedlib') _
+
 pipeline {
 
     agent none
@@ -29,7 +31,10 @@ pipeline {
         label "agent-01"
     }
             steps {
-                sh 'mvn package install -DskipTests=true'
+                script{
+                    def mvn = new edu.depi.maven()
+                    mvn.mavenCommand("package install -DskipTests=true")
+                }
             }
         }
 
@@ -38,7 +43,10 @@ pipeline {
         label "agent-01"
     }
             steps {
-                sh 'mvn test'
+                script{
+                    def test = new edu.depi.maven()
+                    test.mavenCommand("test")
+                }
             }
         }
 
@@ -47,7 +55,10 @@ pipeline {
         label "agent-01"
     }
             steps {
-                sh 'docker build -t fadel8/repo_1:v${BUILD_NUMBER} .'
+                script{
+                    def build = new edu.depi.docker()
+                    build.dockerBuild("fadel8/repo_1", "v${BUILD_NUMBER}")
+                }
             }
         }
 
@@ -56,7 +67,10 @@ pipeline {
         label "agent-01"
     }
             steps {
-                sh 'echo "$Password" | docker login -u "$Username" --password-stdin'
+                script{
+                    def login = new edu.depi.docker()
+                    login.dockerLogin("${username}", "${password}")
+                }
             }
         }
 
@@ -65,7 +79,10 @@ pipeline {
         label "agent-01"
     }
             steps {
-                sh 'docker push fadel8/repo_1:v${BUILD_NUMBER}'
+                script{
+                    def push = new edu.depi.docker()
+                    push.dockerPush("fadel8/repo_1", "${BUILD_NUMBER}")
+                }
             }
         }
         stage("Deploy Docker image"){
