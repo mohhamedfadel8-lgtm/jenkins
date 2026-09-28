@@ -1,0 +1,43 @@
+node("agent-01"){
+
+    def maven = tool name: 'maven-3-5-4', type: 'maven'
+    def jdk = tool name: 'JDK-11', type: 'jdk'
+
+    stage("Get Source Code"){
+        git branch: 'main', url: 'https://github.com/mohhamedfadel8-lgtm/jenkins.git'
+    }
+
+    stage("Build Java App"){
+        env.PATH = "${maven}/bin:${jdk}/bin:${env.PATH}"
+        sh 'mvn package install -DskipTest=true'
+    }
+
+    stage("Test Java App"){
+        sh 'mvn test'
+    }
+
+    stage("Build Docker Image"){
+        sh 'docker build -t fadel8/repo_1:v${BUILD_NUMBER} .'
+    }
+
+    stage("Login to Dockerhub"){
+        withCredentials([string(credentialsId: 'Docker-username', variable: 'username'), string(credentialsId: 'Docker_Password', variable: 'password')]) {
+    sh 'docker login -u ${username} -p ${password}'
+}
+    }
+
+    stage("Push to Dockerhub"){
+        sh 'docker push fadel8/repo_1:v${BUILD_NUMBER}'
+    }
+
+    stage("Deploy Docker Application"){
+        node("agent-02"){
+           def Check_Image = sh 'docker ps -a | grep java-app || true'
+          if(Check_Image){
+            sh 'docker rm -f java-app && docker run -d -p 8090:8090 --name java-app fadel8/repo_1:v${BUILD_NUMBER}'
+           }else{
+              sh 'docker run -d -p 8090:8090 --name java-app fadel8/repo_1:v${BUILD_NUMBER}'
+        }  
+        } 
+    }
+}
