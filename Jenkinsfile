@@ -57,7 +57,7 @@ pipeline {
             steps {
                 script{
                     def build = new edu.depi.docker()
-                    build.dockerBuild("fadel8/repo_1", "v${BUILD_NUMBER}")
+                    build.dockerBuild("fadel8/repo_1", "${BUILD_NUMBER}")
                 }
             }
         }
